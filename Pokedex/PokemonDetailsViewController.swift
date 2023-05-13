@@ -8,6 +8,7 @@ class PokemonDetailsViewController: UIViewController {
     
     var pokemonID: Int?
     
+    
     private func getImage(for pokemon: PKMPokemon)  {
         guard let imageURLString = pokemon.sprites?.frontDefault,
               let imageURL = URL(string: imageURLString)
@@ -23,6 +24,7 @@ class PokemonDetailsViewController: UIViewController {
             }
         }.resume ()
     }
+    
     
     private func pokemonTypeLabel(pokemonType: String) -> UILabel {
         
@@ -73,7 +75,6 @@ class PokemonDetailsViewController: UIViewController {
     }()
     
 
-    
     private let typesRow: UIStackView = {
         let row = UIStackView()
         row.axis = .horizontal
@@ -81,8 +82,6 @@ class PokemonDetailsViewController: UIViewController {
         row.spacing = 10
         return row
     }()
-    
-    
     
     
     override func viewDidLoad() {
@@ -98,22 +97,25 @@ class PokemonDetailsViewController: UIViewController {
                     for pokemonType in pokemon.types! {
                         self.typesRow.addArrangedSubview(self.pokemonTypeLabel(pokemonType: pokemonType.type?.name ?? ""))
                     }
-                    
                     self.getImage(for: pokemon)
+                    self.pokemonNameLabel.text = NSLocalizedString("pokemon-name-\(self.pokemonID ?? 0)", comment: "String")
                 }
             case .failure(let error):
                 print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                    let alert = UIAlertController(title: "An error occurred", message: "Failed to load Pokemon. Please check your internet connection and try again.", preferredStyle: .alert)
+                    self.present(alert, animated: true, completion: nil)
+                    alert.addAction(UIAlertAction(title: "Okay", style: .default))
+                }
             }
         }
-        
-        
 
-        pokemonNameLabel.text = NSLocalizedString("pokemon-name-\(pokemonID ?? 0)", comment: "String")
 
         view.addSubview(pokemonNameLabel)
         view.addSubview(pokemonImageView)
         view.addSubview(typesRow)
-
+        
         let constraints = [
             pokemonNameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             pokemonNameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),

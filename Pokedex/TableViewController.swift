@@ -6,6 +6,7 @@ class TableViewController: UITableViewController {
     private static let tableViewCellReuseIdentifier = "weeeeeee"
     var kantoPokedex = 1...151
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = NSLocalizedString("Title", comment: "navigation bar title")
@@ -39,14 +40,17 @@ class TableViewController: UITableViewController {
         goToPokemonDetailsViewController(pokemonID: indexPath.row + 1)
     }
     
+    
     func goToPokemonDetailsViewController(pokemonID: Int) {
         let detailsViewController = PokemonDetailsViewController()
         detailsViewController.pokemonID = pokemonID
         detailsViewController.title = NSLocalizedString("pokemon-name-\(pokemonID)", comment: "Pokemon Name")
 
         navigationController?.pushViewController(detailsViewController, animated: true)
+
     }
       
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
